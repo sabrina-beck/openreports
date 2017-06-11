@@ -44,7 +44,7 @@ public class EnviarModeloDeRelatorioModelTest extends BaseTest {
         new TestBuilder()
                 .setModel(MODEL_PATH)
                 .setContext(new EnviarModeloDeRelatorioImpl(driver, softly))
-                .setPathGenerator(new RandomPath(new TimeDuration(30, TimeUnit.SECONDS)))
+                .setPathGenerator(new RandomPath(new TimeDuration(120, TimeUnit.SECONDS)))
                 .setStart("e_init")
                 .execute();
         softly.assertAll();
