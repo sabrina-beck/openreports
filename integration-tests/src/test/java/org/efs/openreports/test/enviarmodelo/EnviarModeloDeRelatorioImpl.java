@@ -132,10 +132,12 @@ public class EnviarModeloDeRelatorioImpl extends ExecutionContext implements Env
 
         softly.assertThat(newReportFiles).hasSize(1);
 
-        ReportFile reportFile = newReportFiles.get(0);
-        softly.assertThat(reportFile.getReportFileName()).isEqualTo("valid_file.jasper");
-        softly.assertThat(reportFile.getDownloadLink().getAttribute("href"))
-                .isEqualTo(BASE_URL + "/reportUpload.action?command=download&revision=valid_file.jasper");
+        if (newReportFiles.size() == 1) {
+            ReportFile reportFile = newReportFiles.get(0);
+            softly.assertThat(reportFile.getReportFileName()).isEqualTo("valid_file.jasper");
+            softly.assertThat(reportFile.getDownloadLink().getAttribute("href"))
+                    .isEqualTo(BASE_URL + "/reportUpload.action?command=download&revision=valid_file.jasper");
+        }
     }
 
     @Override
