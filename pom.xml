@@ -8,6 +8,7 @@
 
     <modules>
         <module>openreports</module>
+        <module>integration-tests</module>
     </modules>
 
     <properties>
