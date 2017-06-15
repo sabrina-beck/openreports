@@ -84,7 +84,7 @@ public class EditReportActionTest {
     }
 
     @Test
-    public void ct3_instruction_cover() throws ProviderException {
+    public void ct3_editReportWithSubmitValidateWithoutQuery_shouldReturnError() throws ProviderException {
         Report report = ReportFixture.aReport();
         String originalName = report.getName();
 
@@ -162,7 +162,7 @@ public class EditReportActionTest {
     }
 
     @Test
-    public void ct4_instruction_cover() throws ProviderException {
+    public void ct4_withSubmitValidate_shouldValidate() throws ProviderException {
         Report report = ReportFixture.aReport();
         String newName = "New name";
 
@@ -236,7 +236,7 @@ public class EditReportActionTest {
 
     @Test
     @Ignore
-    public void ct5_instruction_cover() throws ProviderException {
+    public void ct5_createNewReportWithDuplicate_shouldCreateSuccessfully() throws ProviderException {
         String newName = "New name";
 
         Report report = ReportFixture.aReport();
@@ -313,7 +313,7 @@ public class EditReportActionTest {
     }
 
     @Test
-    public void ct6_instruction_cover() throws ProviderException {
+    public void ct6_createNewReportWithoutDuplicate_shouldCreateSuccessfully() throws ProviderException {
         String newName = "New name";
 
         Report report = ReportFixture.aReport();
@@ -358,7 +358,7 @@ public class EditReportActionTest {
     }
 
     @Test
-    public void ct7_instruction_cover() throws ProviderException {
+    public void ct7_editReport_shouldEditSuccessfully() throws ProviderException {
         Report report = ReportFixture.aReport();
         String newName = "New name";
 
@@ -430,7 +430,7 @@ public class EditReportActionTest {
     }
 
     @Test
-    public void ct8_instruction_cover() {
+    public void ct8_withSomeErrorDuringTheAction_shouldReturnError() {
 
         EditReportAction action = new EditReportAction();
         action.setCommand("edit");
@@ -442,12 +442,10 @@ public class EditReportActionTest {
     }
 
     @Test
-    public void ct9_instruction_cover() throws ProviderException {
+    public void ct9_chargeReportWithoutDataSourceAndChartToEdit_shouldRecoveryDataFromRequestedReport() throws ProviderException {
         Report report = ReportFixture.aReport();
         report.setDataSource(null);
         report.setReportChart(null);
-
-        String newName = "New name";
 
         ReportProvider reportProvider = mock(ReportProvider.class);
         when(reportProvider.getReport(report.getId())).thenReturn(report);
@@ -495,7 +493,7 @@ public class EditReportActionTest {
     }
 
     @Test
-    public void ct10_instruction_cover() throws ProviderException {
+    public void ct10_submitValidateWithoutParameters_shouldValidate() throws ProviderException {
         Report report = ReportFixture.aReport();
         String newName = "New name";
 
