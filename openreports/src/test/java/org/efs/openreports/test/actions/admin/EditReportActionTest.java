@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class EditReportActionTest {
 
     @Test
-    public void ct1_instruction_cover() throws ProviderException {
+    public void ct1_chargeEditionData_shouldRecoveryDataFromRequestedReport() throws ProviderException {
         Report report = ReportFixture.aReport();
 
         ReportProvider reportProvider = mock(ReportProvider.class);
@@ -45,6 +45,7 @@ public class EditReportActionTest {
         String result = action.execute();
 
         assertThat(result).isEqualTo(INPUT);
+
         assertThat(action.getReport()).isEqualTo(report);
         assertThat(action.getName()).isEqualTo(report.getName());
         assertThat(action.getDescription()).isEqualTo(report.getDescription());
@@ -67,9 +68,10 @@ public class EditReportActionTest {
     }
 
     @Test
-    public void ct2_instruction_cover() {
+    public void ct2_createNewReportWithoutName_shouldReturnError() {
         EditReportAction action = new EditReportAction();
         action.setCommand("add");
+        action.setName(null);
         action.setSubmitOk("ok");
         action.setSubmitValidate("ok");
         action.setSubmitDuplicate("ok");
@@ -436,6 +438,132 @@ public class EditReportActionTest {
         String result = action.execute();
 
         assertThat(result).isEqualTo(INPUT);
+
+    }
+
+    @Test
+    public void ct9_instruction_cover() throws ProviderException {
+        Report report = ReportFixture.aReport();
+        report.setDataSource(null);
+        report.setReportChart(null);
+
+        String newName = "New name";
+
+        ReportProvider reportProvider = mock(ReportProvider.class);
+        when(reportProvider.getReport(report.getId())).thenReturn(report);
+
+        TagProvider tagProvider = mock(TagProvider.class);
+        String tags = "MY TAG";
+        when(tagProvider.getTagsForObject(report.getId(), Report.class, ORTag.TAG_TYPE_UI))
+                .thenReturn(tags);
+
+        EditReportAction action = new EditReportAction();
+
+        action.setReportProvider(reportProvider);
+        action.setTagProvider(tagProvider);
+
+        action.setId(report.getId());
+        action.setCommand("edit");
+
+        action.setSubmitOk(null);
+        action.setSubmitValidate(null);
+        action.setSubmitDuplicate(null);
+
+        String result = action.execute();
+
+        assertThat(result).isEqualTo(INPUT);
+
+        assertThat(action.getReport()).isEqualTo(report);
+        assertThat(action.getName()).isEqualTo(report.getName());
+        assertThat(action.getDescription()).isEqualTo(report.getDescription());
+        assertThat(action.getFile()).isEqualTo(report.getFile());
+        assertThat(action.getQuery()).isEqualTo(report.getQuery());
+        assertThat(action.getId()).isEqualTo(report.getId());
+        assertThat(action.isPdfExportEnabled()).isEqualTo(report.isPdfExportEnabled());
+        assertThat(action.isCsvExportEnabled()).isEqualTo(report.isCsvExportEnabled());
+        assertThat(action.isHtmlExportEnabled()).isEqualTo(report.isHtmlExportEnabled());
+        assertThat(action.isXlsExportEnabled()).isEqualTo(report.isXlsExportEnabled());
+        assertThat(action.isRtfExportEnabled()).isEqualTo(report.isRtfExportEnabled());
+        assertThat(action.isTextExportEnabled()).isEqualTo(report.isTextExportEnabled());
+        assertThat(action.isExcelExportEnabled()).isEqualTo(report.isExcelExportEnabled());
+        assertThat(action.isImageExportEnabled()).isEqualTo(report.isImageExportEnabled());
+        assertThat(action.isVirtual()).isEqualTo(report.isVirtualizationEnabled());
+        assertThat(action.isHidden()).isEqualTo(report.isHidden());
+        assertThat(action.getDataSourceId()).isEqualTo(0);
+        assertThat(action.getReportChartId()).isEqualTo(0);
+        assertThat(action.getTags()).isEqualTo(tags);
+    }
+
+    @Test
+    public void ct10_instruction_cover() throws ProviderException {
+        Report report = ReportFixture.aReport();
+        String newName = "New name";
+
+        ReportProvider reportProvider = mock(ReportProvider.class);
+        when(reportProvider.getReport(report.getId())).thenReturn(report);
+
+        ReportParameter reportParameter = ReportParameterFixture.aReportParameter();
+        ParameterProvider parameterProvider = mock(ParameterProvider.class);
+        when(parameterProvider.getReportParameter(anyString()))
+                .thenReturn(reportParameter);
+
+        EditReportAction action = new EditReportAction();
+
+        action.setReportProvider(reportProvider);
+        action.setParameterProvider(parameterProvider);
+
+        action.setId(report.getId());
+        action.setCommand("edit");
+        action.setSubmitOk("ok");
+        action.setSubmitValidate("ok");
+        action.setSubmitDuplicate(null);
+        action.setName(newName);
+        action.setQuery("SELECT * FROM people;");
+        action.setCsvExportEnabled(true);
+        action.setHtmlExportEnabled(false);
+        action.setPdfExportEnabled(false);
+        action.setXlsExportEnabled(false);
+        action.setRtfExportEnabled(false);
+        action.setTextExportEnabled(false);
+        action.setExcelExportEnabled(false);
+        action.setDataSourceId(-1);
+        action.setReportChartId(-1);
+        action.setDescription("new description");
+        action.setFile("valid.jasper");
+
+        String result = action.execute();
+
+        assertThat(result).isEqualTo(INPUT);
+
+        assertThat(action.getReport().getParameters()).isEqualTo(report.getParameters());
+        assertThat(action.getReport().isDisplayInline()).isEqualTo(report.isDisplayInline());
+
+        assertThat(action.getReport().getName()).isEqualTo(newName);
+        assertThat(action.getReport().getDescription()).isEqualTo(action.getDescription());
+        assertThat(action.getReport().getFile()).isEqualTo(action.getFile());
+        assertThat(action.getReport().getQuery()).isEqualTo(action.getQuery());
+        assertThat(action.getReport().isCsvExportEnabled())
+                .isEqualTo(action.isCsvExportEnabled());
+        assertThat(action.getReport().isHtmlExportEnabled())
+                .isEqualTo(action.isHtmlExportEnabled());
+        assertThat(action.getReport().isPdfExportEnabled())
+                .isEqualTo(action.isPdfExportEnabled());
+        assertThat(action.getReport().isXlsExportEnabled())
+                .isEqualTo(action.isXlsExportEnabled());
+        assertThat(action.getReport().isRtfExportEnabled())
+                .isEqualTo(action.isRtfExportEnabled());
+        assertThat(action.getReport().isTextExportEnabled())
+                .isEqualTo(action.isTextExportEnabled());
+        assertThat(action.getReport().isExcelExportEnabled())
+                .isEqualTo(action.isExcelExportEnabled());
+        assertThat(action.getReport().isImageExportEnabled())
+                .isEqualTo(action.isImageExportEnabled());
+        assertThat(action.getReport().isVirtualizationEnabled())
+                .isEqualTo(action.isVirtual());
+        assertThat(action.getReport().isHidden())
+                .isEqualTo(action.isHidden());
+        assertThat(action.getReport().getDataSource()).isNull();
+        assertThat(action.getReport().getReportChart()).isNull();
 
     }
 }
