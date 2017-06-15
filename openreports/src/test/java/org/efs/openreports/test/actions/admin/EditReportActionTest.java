@@ -1,5 +1,8 @@
 package org.efs.openreports.test.actions.admin;
 
+import com.opensymphony.xwork2.ActionContext;
+import org.apache.commons.collections.map.HashedMap;
+import org.efs.openreports.ORStatics;
 import org.efs.openreports.actions.admin.EditReportAction;
 import org.efs.openreports.objects.*;
 import org.efs.openreports.providers.*;
@@ -169,6 +172,10 @@ public class EditReportActionTest {
         ReportProvider reportProvider = mock(ReportProvider.class);
         when(reportProvider.getReport(report.getId())).thenReturn(report);
 
+        HashedMap session = new HashedMap();
+        session.put(ORStatics.REPORT_USER, ReportUserFixture.aReportUser(report));
+        ActionContext.getContext().setSession(session);
+
         ReportParameter reportParameter = ReportParameterFixture.aReportParameter();
         ParameterProvider parameterProvider = mock(ParameterProvider.class);
         when(parameterProvider.getReportParameter(anyString()))
@@ -185,7 +192,7 @@ public class EditReportActionTest {
         action.setSubmitValidate("ok");
         action.setSubmitDuplicate(null);
         action.setName(newName);
-        action.setQuery("SELECT * FROM people WHERE name = $P;");
+        action.setQuery("{SELECT * FROM people WHERE name = $P};");
         action.setCsvExportEnabled(true);
         action.setHtmlExportEnabled(false);
         action.setPdfExportEnabled(false);
