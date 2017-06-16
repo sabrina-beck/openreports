@@ -1,4 +1,4 @@
-package org.efs.openreports.test.enviarmodelo;
+package org.efs.openreports.test.model.enviarmodelo;
 
 import org.efs.openreports.test.BaseIntegrationTest;
 import org.graphwalker.core.condition.EdgeCoverage;

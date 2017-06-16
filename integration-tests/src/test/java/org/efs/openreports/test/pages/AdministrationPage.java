@@ -5,8 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class AdministrationPage extends AuthenticatedBasePage {
-    public AdministrationPage(WebDriver driver) {
-        super(driver);
+    public AdministrationPage(String baseUrl, WebDriver driver) {
+        super(baseUrl, driver);
     }
 
     public boolean hasAccessToReports() {
@@ -16,6 +16,6 @@ public class AdministrationPage extends AuthenticatedBasePage {
     public ReportsPage clickReports() {
         WebElement link = driver.findElement(By.cssSelector("td.img-report a"));
         link.click();
-        return new ReportsPage(driver);
+        return new ReportsPage(baseUrl, driver);
     }
 }

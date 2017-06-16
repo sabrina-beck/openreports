@@ -6,9 +6,11 @@ import org.openqa.selenium.WebElement;
 
 public class LoginPage {
 
+    private final String baseUrl;
     private final WebDriver driver;
 
-    public LoginPage(WebDriver driver) {
+    public LoginPage(String baseUrl, WebDriver driver) {
+        this.baseUrl = baseUrl;
         this.driver = driver;
     }
 
@@ -35,6 +37,6 @@ public class LoginPage {
     public GroupsPage submit() {
         WebElement button = driver.findElement(By.cssSelector("input[type=submit]"));
         button.click();
-        return new GroupsPage(driver);
+        return new GroupsPage(baseUrl, driver);
     }
 }

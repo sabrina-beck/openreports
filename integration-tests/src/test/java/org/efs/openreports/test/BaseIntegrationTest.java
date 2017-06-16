@@ -1,7 +1,6 @@
 package org.efs.openreports.test;
 
 import org.assertj.core.api.SoftAssertions;
-import org.graphwalker.core.machine.ExecutionContext;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.WebDriver;
@@ -24,6 +23,6 @@ public class BaseIntegrationTest {
 
     @After
     public void tearDown() {
-        driver.close();
+        driver.quit();
     }
 }

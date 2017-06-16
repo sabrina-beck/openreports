@@ -5,11 +5,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class MenuPage {
+public class MenuSubPage {
 
+    private final String baseUrl;
     private final WebDriver driver;
 
-    public MenuPage(WebDriver driver) {
+    public MenuSubPage(String baseUrl, WebDriver driver) {
+        this.baseUrl = baseUrl;
         this.driver = driver;
     }
 
@@ -24,6 +26,6 @@ public class MenuPage {
     public AdministrationPage clickAdministration() {
         WebElement adminButton = driver.findElement(By.id("adminButton"));
         adminButton.click();
-        return new AdministrationPage(driver);
+        return new AdministrationPage(baseUrl, driver);
     }
 }

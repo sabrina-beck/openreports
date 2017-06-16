@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UploadReportFilesPage extends AuthenticatedBasePage {
-    public UploadReportFilesPage(WebDriver driver) {
-        super(driver);
+    public UploadReportFilesPage(String baseUrl, WebDriver driver) {
+        super(baseUrl, driver);
     }
 
     public boolean isOpen() {

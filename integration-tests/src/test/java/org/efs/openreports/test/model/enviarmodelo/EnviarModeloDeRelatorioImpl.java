@@ -1,10 +1,10 @@
-package org.efs.openreports.test.enviarmodelo;
+package org.efs.openreports.test.model.enviarmodelo;
 
 import org.assertj.core.api.SoftAssertions;
 import org.efs.openreports.test.model.EnviarModeloDeRelatorio;
 import org.efs.openreports.test.pages.*;
 import org.efs.openreports.test.pages.elements.ReportFile;
-import org.efs.openreports.test.pages.subpage.MenuPage;
+import org.efs.openreports.test.pages.subpage.MenuSubPage;
 import org.graphwalker.core.machine.ExecutionContext;
 import org.openqa.selenium.WebDriver;
 
@@ -33,7 +33,7 @@ public class EnviarModeloDeRelatorioImpl extends ExecutionContext implements Env
 
     @Override
     public void e_usuario_pressiona_botao_de_upload() {
-        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(driver);
+        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(BASE_URL, driver);
         uploadReportFilesPage.clickUpload();
     }
 
@@ -44,7 +44,7 @@ public class EnviarModeloDeRelatorioImpl extends ExecutionContext implements Env
 
     @Override
     public void v_s6_arquivo_invalido_escolhido() {
-        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(driver);
+        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(BASE_URL, driver);
         softly.assertThat(uploadReportFilesPage.getChoosedFileName()
                 .endsWith("invalid_file.ico")).isTrue();
     }
@@ -67,14 +67,14 @@ public class EnviarModeloDeRelatorioImpl extends ExecutionContext implements Env
     @Override
     public void e_usuario_escolhe_arquivo_valido() {
         File file = Paths.get("src/test/resources/valid_file.jasper").toFile();
-        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(driver);
+        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(BASE_URL, driver);
         uploadReportFilesPage.chooseFile(file);
     }
 
     @Override
     public void
     e_init() {
-        LoginPage loginPage = new LoginPage(driver);
+        LoginPage loginPage = new LoginPage(BASE_URL, driver);
 
         loginPage.setUsername("admin");
         loginPage.setPassword("admin");
@@ -83,7 +83,7 @@ public class EnviarModeloDeRelatorioImpl extends ExecutionContext implements Env
 
     @Override
     public void v_s2_formulario_de_upload_aberto() {
-        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(driver);
+        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(BASE_URL, driver);
         softly.assertThat(uploadReportFilesPage.isOpen()).isTrue();
     }
 
@@ -94,7 +94,7 @@ public class EnviarModeloDeRelatorioImpl extends ExecutionContext implements Env
 
     @Override
     public void e_pede_arquivo_de_modelo_de_relatorio() {
-        ReportsPage reportsPage = new ReportsPage(driver);
+        ReportsPage reportsPage = new ReportsPage(BASE_URL, driver);
         reportsPage.clickUploadReportFiles();
     }
 
@@ -105,7 +105,7 @@ public class EnviarModeloDeRelatorioImpl extends ExecutionContext implements Env
 
     @Override
     public void v_s10_mensagem_de_arquivo_invalido() {
-        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(driver);
+        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(BASE_URL, driver);
 
         softly.assertThat(uploadReportFilesPage.hasInvalidFileErrorMessage()).isTrue();
     }
@@ -113,7 +113,7 @@ public class EnviarModeloDeRelatorioImpl extends ExecutionContext implements Env
     @Override
     public void e_usuario_escolhe_arquivo_invalido() {
         File file = Paths.get("src/test/resources/invalid_file.ico").toFile();
-        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(driver);
+        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(BASE_URL, driver);
         uploadReportFilesPage.chooseFile(file);
     }
 
@@ -124,7 +124,7 @@ public class EnviarModeloDeRelatorioImpl extends ExecutionContext implements Env
 
     @Override
     public void v_s9_arquivo_exibido_na_listagem() {
-        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(driver);
+        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(BASE_URL, driver);
         List<ReportFile> newReportFiles = uploadReportFilesPage.listReportFiles()
                 .stream()
                 .filter(reportFile -> reportFile.getReportFileName().equals("valid_file.jasper"))
@@ -142,23 +142,23 @@ public class EnviarModeloDeRelatorioImpl extends ExecutionContext implements Env
 
     @Override
     public void v_s5_arquivo_valido_escolhido() {
-        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(driver);
+        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(BASE_URL, driver);
         softly.assertThat(uploadReportFilesPage.getChoosedFileName()
                 .endsWith("valid_file.jasper")).isTrue();
     }
 
     @Override
     public void v_s11_mensagem_de_arquivo_obrigatorio() {
-        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(driver);
+        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(BASE_URL, driver);
 
         softly.assertThat(uploadReportFilesPage.hasRequiredFileErrorMessage()).isTrue();
     }
 
     @Override
     public void v_s1_usuario_logado_e_com_permissao() {
-        GroupsPage groupsPage = new GroupsPage(driver);
+        GroupsPage groupsPage = new GroupsPage(BASE_URL, driver);
 
-        MenuPage menu = groupsPage.getMenu();
+        MenuSubPage menu = groupsPage.getMenu();
 
         softly.assertThat(menu.isPresent()).isTrue();
         softly.assertThat(menu.hasAccessToAdministrationPanel()).isTrue();
@@ -187,7 +187,7 @@ public class EnviarModeloDeRelatorioImpl extends ExecutionContext implements Env
 
     @Override
     public void v_s12_mensagem_de_arquivo_enviado_com_sucesso() {
-        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(driver);
+        UploadReportFilesPage uploadReportFilesPage = new UploadReportFilesPage(BASE_URL, driver);
         softly.assertThat(uploadReportFilesPage.hasSuccessMessage()).isTrue();
     }
 
