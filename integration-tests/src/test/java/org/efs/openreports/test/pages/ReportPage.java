@@ -58,6 +58,10 @@ public class ReportPage extends AuthenticatedBasePage {
         radioButton.sendKeys(Integer.toString(exportTypeCode));
     }
 
+    public boolean hasExportTypeList() {
+        return driver.getPageSource().indexOf("Export Type") > 0;
+    }
+
     public boolean hasInvalidExportTypeMessage() {
         return driver.getPageSource().indexOf("Invalid export type!") > 0;
     }
