@@ -89,7 +89,7 @@ public class ReportViewerAction extends ActionSupport
 			{
 				response.setContentLength(imageData.length);
 				ServletOutputStream ouputStream = response.getOutputStream();
-				ouputStream.write(imageData, 0, imageData.length);
+				ouputStream.write(imageData);
 				ouputStream.flush();
 				ouputStream.close();
 			}
