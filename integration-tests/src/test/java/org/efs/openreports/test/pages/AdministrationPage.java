@@ -5,6 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class AdministrationPage extends AuthenticatedBasePage {
+    private static By REPORTS_SELECTOR = By.cssSelector("td.img-report a");
+
     public AdministrationPage(String baseUrl, WebDriver driver) {
         super(baseUrl, driver);
     }
@@ -18,8 +20,12 @@ public class AdministrationPage extends AuthenticatedBasePage {
     }
 
     public ReportsPage clickReports() {
-        WebElement link = driver.findElement(By.cssSelector("td.img-report a"));
+        WebElement link = driver.findElement(REPORTS_SELECTOR);
         link.click();
         return new ReportsPage(baseUrl, driver);
+    }
+
+    public boolean hasReports() {
+        return driver.findElements(REPORTS_SELECTOR).size() > 0;
     }
 }

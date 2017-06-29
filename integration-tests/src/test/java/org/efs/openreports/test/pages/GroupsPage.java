@@ -21,6 +21,11 @@ public class GroupsPage extends AuthenticatedBasePage {
         return new ReportsPage(baseUrl, driver);
     }
 
+    public AdministrationPage clickAdministrationMenu() {
+        driver.findElement(By.linkText("Administration")).click();
+        return new AdministrationPage(baseUrl, driver);
+    }
+
     public boolean hasNotAuthorizedToSeeGroupMessage() {
         return driver.getPageSource().indexOf("You are not authorized to view this Group.") > 0;
     }

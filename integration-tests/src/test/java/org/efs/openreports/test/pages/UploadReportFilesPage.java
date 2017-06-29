@@ -28,9 +28,10 @@ public class UploadReportFilesPage extends AuthenticatedBasePage {
         return chooseFileInput.getAttribute("value");
     }
 
-    public void clickUpload() {
+    public UploadReportFilesPage clickUpload() {
         WebElement uploadButton = driver.findElement(By.cssSelector("input[type=submit]"));
         uploadButton.click();
+        return new UploadReportFilesPage(baseUrl, driver);
     }
 
     public List<ReportFile> listReportFiles() {
