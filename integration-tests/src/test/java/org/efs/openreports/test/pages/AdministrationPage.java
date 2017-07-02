@@ -9,6 +9,10 @@ public class AdministrationPage extends AuthenticatedBasePage {
         super(baseUrl, driver);
     }
 
+    public void open() {
+        driver.get(baseUrl + "/reportAdmin.action");
+    }
+
     public boolean hasAccessToReports() {
         return driver.findElements(By.linkText("Reports")).size() > 0;
     }
