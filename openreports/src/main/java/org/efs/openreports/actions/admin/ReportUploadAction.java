@@ -40,8 +40,7 @@ import org.efs.openreports.providers.ReportProvider;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-public class ReportUploadAction extends ActionSupport  
-{	
+public class ReportUploadAction extends ActionSupport {
 	private static final long serialVersionUID = 3832737720793888800L;
 
 	protected static Logger log = Logger.getLogger(ReportUploadAction.class);
@@ -49,197 +48,163 @@ public class ReportUploadAction extends ActionSupport
 	private ReportProvider reportProvider;
 
 	private List<ReportTemplate> reportTemplates;
-   
-    private File reportFile;
-    private String reportFileContentType;
-    private String reportFileFileName;
-    private String revision;
-    
+
+	private File reportFile;
+	private String reportFileContentType;
+	private String reportFileFileName;
+	private String revision;
+
 	private String command;
-    
-    private DirectoryProvider directoryProvider;
+
+	private DirectoryProvider directoryProvider;
 
 	@Override
-	public String execute()
-	{
-		try
-		{
-			if ("upload".equals(command))
-			{				
-				if (reportFile != null)
-				{			
-                    File destinationFile = new File(directoryProvider.getReportDirectory() + reportFileFileName);
-                    
-                    try
-                    {
-                    	if (destinationFile.exists())
-                    	{
-                    		int revisionCount = reportProvider.getReportTemplate(reportFileFileName).getRevisionCount();
-                    		File versionedFile = new File(directoryProvider.getReportDirectory() + reportFileFileName + "." + revisionCount);
-                    		FileUtils.copyFile(destinationFile, versionedFile);                    		
-                    	}
-                    	
-                        FileUtils.copyFile(reportFile, destinationFile);
-                    }
-                    catch(IOException ioe)
-                    {
-                        addActionError(ioe.toString());
-                        return SUCCESS;
-                    }
-					
-                    if ((reportFileFileName.endsWith(".xml")) || (reportFileFileName.endsWith(".jrxml")))
-					{
-						try
-						{
+	public String execute() {
+		try {
+			if ("upload".equals(command)) {
+				if (reportFile != null) {
+					File destinationFile = new File(directoryProvider.getReportDirectory() + reportFileFileName);
+
+					try {
+						if (destinationFile.exists()) {
+							int revisionCount = reportProvider.getReportTemplate(reportFileFileName).getRevisionCount();
+							File versionedFile = new File(
+									directoryProvider.getReportDirectory() + reportFileFileName + "." + revisionCount);
+							FileUtils.copyFile(destinationFile, versionedFile);
+						}
+
+						FileUtils.copyFile(reportFile, destinationFile);
+					} catch (IOException ioe) {
+						addActionError(ioe.toString());
+						return SUCCESS;
+					}
+
+					if ((reportFileFileName.endsWith(".xml")) || (reportFileFileName.endsWith(".jrxml"))) {
+						try {
 							System.setProperty(JRProperties.COMPILER_CLASS, JRJdtCompiler.class.getName());
 							JRProperties.setProperty(JRProperties.COMPILER_CLASS, JRJdtCompiler.class.getName());
-								
+
 							JasperCompileManager.compileReportToFile(destinationFile.getAbsolutePath());
-						}
-						catch (Exception e)
-						{
-							if (e.toString().indexOf("groovy") > -1)
-							{
-							    try
-								{
-									System.setProperty(JRProperties.COMPILER_CLASS,"net.sf.jasperreports.compilers.JRGroovyCompiler" );
-									JRProperties.setProperty(JRProperties.COMPILER_CLASS,"net.sf.jasperreports.compilers.JRGroovyCompiler");
-					                   
-					                JasperCompileManager.compileReportToFile(destinationFile.getAbsolutePath());
-								}
-								catch(Exception ex)
-								{
+						} catch (Exception e) {
+							if (e.toString().indexOf("groovy") > -1) {
+								try {
+									System.setProperty(JRProperties.COMPILER_CLASS,
+											"net.sf.jasperreports.compilers.JRGroovyCompiler");
+									JRProperties.setProperty(JRProperties.COMPILER_CLASS,
+											"net.sf.jasperreports.compilers.JRGroovyCompiler");
+
+									JasperCompileManager.compileReportToFile(destinationFile.getAbsolutePath());
+								} catch (Exception ex) {
 									log.error("Failed to compile report: " + reportFileFileName, e);
 									addActionError("Failed to compile report: " + e.toString());
 								}
-							}
-							else
-							{								
+							} else {
 								log.error("Failed to compile report: " + reportFileFileName, e);
 								addActionError("Failed to compile report: " + e.toString());
 							}
 						}
 					}
+				} else {
+					addActionError("Invalid File.");
 				}
-                else
-                {
-                    addActionError("Invalid File.");
-                }
 			}
-			
-			if ("download".equals(command))
-			{
+
+			if ("download".equals(command)) {
 				String templateFileName = revision;
-				
+
 				// if there is a revision at the end of the file name, strip it off
-				if (StringUtils.countMatches(templateFileName, ".") > 1)
-				{
+				if (StringUtils.countMatches(templateFileName, ".") > 1) {
 					templateFileName = revision.substring(0, revision.lastIndexOf("."));
 				}
-				
+
 				File templateFile = new File(directoryProvider.getReportDirectory() + revision);
-				byte[] template = FileUtils.readFileToByteArray(templateFile);				
-				
-				HttpServletResponse response = ServletActionContext.getResponse();		
+				byte[] template = FileUtils.readFileToByteArray(templateFile);
+
+				HttpServletResponse response = ServletActionContext.getResponse();
 				response.setHeader("Content-disposition", "inline; filename=" + templateFileName);
 				response.setContentType("application/octet-stream");
 				response.setContentLength(template.length);
-				
+
 				ServletOutputStream out = response.getOutputStream();
 				out.write(template, 0, template.length);
 				out.flush();
-				out.close();				
+				out.close();
 			}
-			
-			if ("revert".equals(command))
-			{
+
+			if ("revert".equals(command)) {
 				String templateFileName = revision.substring(0, revision.lastIndexOf("."));
-				
+
 				File revisionFile = new File(directoryProvider.getReportDirectory() + revision);
 				File currentFile = new File(directoryProvider.getReportDirectory() + templateFileName);
-				
+
 				// create a new revision from the current version
 				int revisionCount = reportProvider.getReportTemplate(templateFileName).getRevisionCount();
-        		File versionedFile = new File(directoryProvider.getReportDirectory() + templateFileName + "." + revisionCount);
-        		FileUtils.copyFile(currentFile, versionedFile);
-        		
-        		// copy the selected revision to the current version
-        		FileUtils.copyFile(revisionFile, currentFile);						
+				File versionedFile = new File(
+						directoryProvider.getReportDirectory() + templateFileName + "." + revisionCount);
+				FileUtils.copyFile(currentFile, versionedFile);
+
+				// copy the selected revision to the current version
+				FileUtils.copyFile(revisionFile, currentFile);
 			}
 
 			reportTemplates = reportProvider.getReportTemplates();
-		}
-		catch (Exception pe)
-		{
+		} catch (Exception pe) {
 			addActionError(pe.getMessage());
-		}       
+		}
 
 		return SUCCESS;
-	}		
-   
-    public List<ReportTemplate> getReportTemplates()
-	{
+	}
+
+	public List<ReportTemplate> getReportTemplates() {
 		return reportTemplates;
 	}
 
-	public void setReportProvider(ReportProvider reportProvider)
-	{
+	public void setReportProvider(ReportProvider reportProvider) {
 		this.reportProvider = reportProvider;
 	}
 
-	public String getCommand()
-	{
+	public String getCommand() {
 		return command;
 	}
 
-	public void setCommand(String command)
-	{
+	public void setCommand(String command) {
 		this.command = command;
 	}
-    
-    public File getReportFile() 
-    {
-        return reportFile;
-    }
-    
-    public void setReportFile(File reportFile)
-    {
-        this.reportFile = reportFile;
-    }
-    
-    public String getReportFileContentType() 
-    {
-        return reportFileContentType;
-    }
-    
-    public void setReportFileContentType(String reportFileContentType) 
-    {
-        this.reportFileContentType = reportFileContentType;
-    }
-    
-    public String getReportFileFileName() 
-    {
-        return reportFileFileName;
-    }
-    
-    public void setReportFileFileName(String reportFileFileName) 
-    {
-        this.reportFileFileName = reportFileFileName;
-    }
-        
-    public String getRevision() 
-    {
+
+	public File getReportFile() {
+		return reportFile;
+	}
+
+	public void setReportFile(File reportFile) {
+		this.reportFile = reportFile;
+	}
+
+	public String getReportFileContentType() {
+		return reportFileContentType;
+	}
+
+	public void setReportFileContentType(String reportFileContentType) {
+		this.reportFileContentType = reportFileContentType;
+	}
+
+	public String getReportFileFileName() {
+		return reportFileFileName;
+	}
+
+	public void setReportFileFileName(String reportFileFileName) {
+		this.reportFileFileName = reportFileFileName;
+	}
+
+	public String getRevision() {
 		return revision;
 	}
 
-	public void setRevision(String revision) 
-	{
+	public void setRevision(String revision) {
 		this.revision = revision;
 	}
 
-	public void setDirectoryProvider(DirectoryProvider directoryProvider) 
-    {
-        this.directoryProvider = directoryProvider;
-    }
+	public void setDirectoryProvider(DirectoryProvider directoryProvider) {
+		this.directoryProvider = directoryProvider;
+	}
 
 }
