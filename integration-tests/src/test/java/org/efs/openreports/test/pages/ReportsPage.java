@@ -9,8 +9,16 @@ public class ReportsPage extends AuthenticatedBasePage {
         super(baseUrl, driver);
     }
 
+    public boolean isOpen() {
+        return driver.getCurrentUrl().endsWith("listReports.action");
+    }
+
     public boolean hasAccessToUploadReportFiles() {
         return driver.findElements(By.linkText("Upload Report Files")).size() > 0;
+    }
+
+    public boolean hasAccessToAddReport() {
+        return driver.findElements(By.linkText("Add Report")).size() > 0;
     }
 
     public UploadReportFilesPage clickUploadReportFiles() {
@@ -19,8 +27,18 @@ public class ReportsPage extends AuthenticatedBasePage {
         return new UploadReportFilesPage(baseUrl, driver);
     }
 
+    public UploadReportFilesPage clickAddReport() {
+        WebElement link = driver.findElement(By.linkText("Add Report"));
+        link.click();
+        return new UploadReportFilesPage(baseUrl, driver);
+    }
+
     public boolean hasReport(String reportName) {
         return driver.findElements(By.linkText(reportName)).size() > 0;
+    }
+
+    public boolean hasReportList() {
+        return driver.getPageSource().indexOf("<td>") > 0;
     }
 
     public ReportPage clickReport(String reportName) {
